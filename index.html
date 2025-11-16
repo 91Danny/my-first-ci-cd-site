@@ -1,28 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head
-    <title>My CI/CD Test Site</title>
+    <title>My CI/CD Test Site - BROKEN VERSION</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            max-width: 800px; 
-            margin: 0 auto; 
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
+            background: #ffcccc;
         }
-        .success { color: green; }
+        .error { color: red; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>🎉 My First CI/CD Deployment! --------------------New line update</h1>
-    <!-- Change this line -->
-<p>Last Update: <strong>CI/CD TEST - This should DEPLOY successfully</strong></p>
-    <p class="success">If you can see this, CI/CD worked!</p>
+    <h1>🚨 BROKEN CI/CD TEST</h1>
+    
+    <div class="error">
+        <p>This version should FAIL CI/CD and NOT deploy!</p>
+        <p>If you can see this, something went wrong!</p>
+    </div>
+
     <p>Repository: <span id="repo-name">Loading...</span></p>
     <p>Deployed: <span id="timestamp"></span></p>
-    
+    <p>Status: <strong>❌ INTENTIONALLY BROKEN</strong></p>
+
     <script>
-        document.getElementById('repo-name').textContent = window.location.hostname + window.location.pathname;
-        document.getElementById('timestamp').textContent = new Date().toLocaleString();
-   script>
-</body>
-//</html>
+        // Missing closing parenthesis - syntax error
+        document.getElementById('repo-name').textContent = window.location.hostname + window.location.pathname
+        
+        // Missing semicolon - syntax error  
+        document.getElementById('timestamp').textContent = new Date().toLocaleString()
+        
+        // Undefined function - runtime error
+        nonExistentFunction()
+    </script>
+
+<!-- Missing closing html tag -->
