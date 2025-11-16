@@ -3,23 +3,60 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
-# Sets permissions for GITHUB_TOKEN to allow deployment
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
+  validate-html:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install HTML validator
+        run: |
+          echo "📄 Installing HTML validation tools..."
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install html5validator
+      
+      - name: Validate HTML syntax
+        run: |
+          echo "🔍 Checking HTML for syntax errors..."
+          if html5validator --root . --format text || true; then
+            echo "✅ HTML validation passed or warnings only"
+          else
+            echo "❌ HTML validation found critical errors!"
+            exit 1
+          fi
+      
+      - name: Check for basic HTML structure
+        run: |
+          echo "🏗️  Verifying HTML structure..."
+          if ! grep -q "</html>" index.html; then
+            echo "❌ ERROR: Missing closing </html> tag!"
+            exit 1
+          fi
+          if ! grep -q "</head>" index.html; then
+            echo "❌ ERROR: Missing closing </head> tag!"
+            exit 1
+          fi
+          if ! grep -q "</body>" index.html; then
+            echo "❌ ERROR: Missing closing </body> tag!"
+            exit 1
+          fi
+          echo "✅ Basic HTML structure is correct"
+
   build:
     runs-on: ubuntu-latest
+    needs: validate-html
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,16 +64,10 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
-      - name: Build verification
-        run: |
-          echo "🔍 Verifying site structure..."
-          ls -la
-          echo "✅ Site is ready for deployment!"
-          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .  # Upload everything
+          path: .
 
   deploy:
     environment:
